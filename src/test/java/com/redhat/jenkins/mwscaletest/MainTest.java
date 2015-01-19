@@ -25,6 +25,8 @@ package com.redhat.jenkins.mwscaletest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.annotation.Nonnull;
 
@@ -42,13 +44,15 @@ import com.redhat.jenkins.mwscaletest.meta.LoadReport;
 public class MainTest {
 
     private static final @Nonnull Reflections reflections = new Reflections("com.redhat.jenkins.mwscaletest");
-    private static final int timeToRun = Integer.getInteger("mwscaletest.timeToRun", 10);
+    private static final int timeToRun = Integer.getInteger("mwscaletest.timeToRun", 50);
 
     public @Rule JenkinsRule j = new JenkinsRule();
     private List<Load> loads = new ArrayList<Load>();
 
     @Before
     public void setUp() throws Exception {
+        Logger.getLogger("com.gargoylesoftware.htmlunit").setLevel(Level.OFF);
+
         for (Class<? extends FixtureFactory> f: reflections.getSubTypesOf(FixtureFactory.class)) {
             FixtureFactory factory = f.newInstance();
             Fixture fixture = factory.create(j);

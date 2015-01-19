@@ -45,8 +45,6 @@ public class FreeStyleJob implements Fixture {
         this.j = j;
         try {
             project = j.createFreeStyleProject("FreeStyleProject");
-            HtmlPage page = j.createWebClient().getPage(project, "configure");
-            System.out.println(page.getTextContent());
         } catch (Exception ex) {
             throw new AssertionError(ex);
         }
@@ -64,12 +62,8 @@ public class FreeStyleJob implements Fixture {
         @Override
         protected Void invoke() throws Exception {
             FreeStyleJob fsj = FreeStyleJob.this;
-System.out.println(fsj.j.getURL());
-//Thread.sleep(1000000);
             HtmlPage page = fsj.j.createWebClient().getPage(fsj.project, "configure");
-System.out.println(page.getTextContent());
             fsj.j.submit(page.getFormByName("config"));
-            //FreeStyleJob.this.j.configRoundtrip(FreeStyleJob.this.project);
             return null;
         }
     }
