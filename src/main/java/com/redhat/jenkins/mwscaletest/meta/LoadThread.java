@@ -51,14 +51,16 @@ public abstract class LoadThread<Ret> extends Thread implements Load {
                 synchronized(measurements) {
                     measurements.add(System.currentTimeMillis() - start);
                 }
+                Thread.sleep(1000); // TODO configure
             }
         } catch (Exception ex) {
             throw new AssertionError(ex);
         }
     }
 
-    public LoadReport terminate() {
+    public LoadReport terminate() throws InterruptedException {
         interrupt();
+        join();
         return getReport();
     }
 

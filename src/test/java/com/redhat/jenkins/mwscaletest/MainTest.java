@@ -30,10 +30,10 @@ import java.util.logging.Logger;
 
 import javax.annotation.Nonnull;
 
-import org.junit.Before;
+import org.jenkinsci.test.acceptance.junit.AbstractJUnitTest;
+import org.jenkinsci.test.acceptance.junit.JenkinsAcceptanceTestRule;
 import org.junit.Rule;
 import org.junit.Test;
-import org.jvnet.hudson.test.JenkinsRule;
 import org.reflections.Reflections;
 
 import com.redhat.jenkins.mwscaletest.meta.Fixture;
@@ -41,31 +41,28 @@ import com.redhat.jenkins.mwscaletest.meta.FixtureFactory;
 import com.redhat.jenkins.mwscaletest.meta.Load;
 import com.redhat.jenkins.mwscaletest.meta.LoadReport;
 
-public class MainTest {
+public class MainTest extends AbstractJUnitTest {
 
     private static final @Nonnull Reflections reflections = new Reflections("com.redhat.jenkins.mwscaletest");
-    private static final int timeToRun = Integer.getInteger("mwscaletest.timeToRun", 50);
+    private static final int timeToRun = Integer.getInteger("mwscaletest.timeToRun", 10);
 
-    public @Rule JenkinsRule j = new JenkinsRule();
+    public @Rule JenkinsAcceptanceTestRule j = new JenkinsAcceptanceTestRule();
     private List<Load> loads = new ArrayList<Load>();
 
-    @Before
-    public void setUp() throws Exception {
+    @Test
+    public void test() throws Exception {
+
         Logger.getLogger("com.gargoylesoftware.htmlunit").setLevel(Level.OFF);
 
         for (Class<? extends FixtureFactory> f: reflections.getSubTypesOf(FixtureFactory.class)) {
             FixtureFactory factory = f.newInstance();
-            Fixture fixture = factory.create(j);
+            Fixture fixture = factory.create(jenkins);
             loads.addAll(fixture.getLoads());
         }
 
         for (Load load: loads) {
             load.start();
         }
-    }
-
-    @Test
-    public void test() throws InterruptedException {
 
         long startTime = System.currentTimeMillis();
         Thread.sleep(1000 * timeToRun);

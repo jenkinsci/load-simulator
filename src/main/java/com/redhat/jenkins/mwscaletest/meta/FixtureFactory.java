@@ -23,7 +23,7 @@
  */
 package com.redhat.jenkins.mwscaletest.meta;
 
-import org.jvnet.hudson.test.JenkinsRule;
+import org.jenkinsci.test.acceptance.po.Jenkins;
 
 /**
  * Contributor of the new setup element such as slave or job.
@@ -35,5 +35,5 @@ public interface FixtureFactory {
     /**
      * Create fixture instance.
      */
-    Fixture create(JenkinsRule j);
+    Fixture create(Jenkins jenkins);
 }

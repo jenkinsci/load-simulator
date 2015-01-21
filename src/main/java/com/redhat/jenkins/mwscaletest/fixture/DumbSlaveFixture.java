@@ -23,28 +23,32 @@
  */
 package com.redhat.jenkins.mwscaletest.fixture;
 
-import hudson.model.FreeStyleProject;
-
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.jvnet.hudson.test.JenkinsRule;
+import org.jenkinsci.test.acceptance.po.Jenkins;
+import org.jenkinsci.test.acceptance.po.Slave;
+import org.jenkinsci.test.acceptance.slave.LocalSlaveController;
+import org.jenkinsci.test.acceptance.slave.SlaveController;
 
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.redhat.jenkins.mwscaletest.Util;
 import com.redhat.jenkins.mwscaletest.meta.Fixture;
 import com.redhat.jenkins.mwscaletest.meta.FixtureFactory;
 import com.redhat.jenkins.mwscaletest.meta.Load;
 import com.redhat.jenkins.mwscaletest.meta.LoadThread;
 
-public class FreeStyleJob implements Fixture {
+public class DumbSlaveFixture implements Fixture {
 
-    private final JenkinsRule j;
-    private final FreeStyleProject project;
+    private SlaveController slaveController = new LocalSlaveController();
 
-    public FreeStyleJob(JenkinsRule j) {
+    private final Jenkins j;
+    private final Slave slave;
+
+    public DumbSlaveFixture(Jenkins j) {
         this.j = j;
         try {
-            project = j.createFreeStyleProject("FreeStyleProject");
+            slave = slaveController.install(j).get();
         } catch (Exception ex) {
             throw new AssertionError(ex);
         }
@@ -59,19 +63,23 @@ public class FreeStyleJob implements Fixture {
 
     public final class ConfigSubmit extends LoadThread<Void> {
 
+        private final URL url;
+
+        private ConfigSubmit() {
+            this.url = DumbSlaveFixture.this.slave.url("config.xml");
+        }
+
         @Override
         protected Void invoke() throws Exception {
-            FreeStyleJob fsj = FreeStyleJob.this;
-            HtmlPage page = fsj.j.createWebClient().getPage(fsj.project, "configure");
-            fsj.j.submit(page.getFormByName("config"));
+            Util.configXmlRoundtrip(url);
             return null;
         }
     }
 
     public static final class Factory implements FixtureFactory {
 
-        public Fixture create(JenkinsRule j) {
-            return new FreeStyleJob(j);
+        public Fixture create(Jenkins j) {
+            return new DumbSlaveFixture(j);
         }
     }
 }

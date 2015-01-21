@@ -18,9 +18,15 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.jenkins-ci.main</groupId>
-      <artifactId>jenkins-test-harness</artifactId>
-      <version>${jenkins.version}</version>
+      <groupId>org.jenkins-ci</groupId>
+      <artifactId>acceptance-test-harness</artifactId>
+      <version>1.13</version>
+    </dependency>
+    <!-- http://stackoverflow.com/a/15197808/2091470  -->
+    <dependency>
+      <groupId>xml-apis</groupId>
+      <artifactId>xml-apis</artifactId>
+      <version>1.4.01</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

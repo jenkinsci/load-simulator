@@ -38,5 +38,5 @@ public interface Load {
     /**
      * Terminate the load and report posed load quantity.
      */
-    LoadReport terminate();
+    LoadReport terminate() throws InterruptedException;
 }
