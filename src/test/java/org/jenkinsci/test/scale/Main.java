@@ -41,7 +41,7 @@ import org.reflections.Reflections;
 public class Main extends AbstractJUnitTest {
 
     private static final @Nonnull Reflections reflections = new Reflections("org.jenkinsci.test.scale");
-    private static final int timeToRun = Integer.getInteger("scaletest.Main.timeToRun", 10);
+    private static final int timeToRun = Integer.getInteger("scaletest.Main.timeToRun", 1);
 
     private List<Load> loads = new ArrayList<Load>();
 
@@ -59,7 +59,7 @@ public class Main extends AbstractJUnitTest {
         }
 
         long startTime = System.currentTimeMillis();
-        Thread.sleep(1000 * timeToRun);
+        Thread.sleep(1000 * 60 * timeToRun);
         long totalTime = System.currentTimeMillis() - startTime;
 
         for (Load load: loads) {
