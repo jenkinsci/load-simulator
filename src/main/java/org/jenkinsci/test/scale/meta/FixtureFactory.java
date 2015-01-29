@@ -21,29 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.redhat.jenkins.mwscaletest.meta;
+package org.jenkinsci.test.scale.meta;
+
+import org.jenkinsci.test.acceptance.po.Jenkins;
 
 /**
- * Generate load utilizing fixture(s).
- *
- *
+ * Contributor of the new setup element such as slave or job.
  *
  * @author ogondza
  */
-public interface Load {
+public interface FixtureFactory {
 
     /**
-     * Start posing load on Jenkins.
+     * Create fixture instance.
      */
-    void start();
-
-    /**
-     * Terminate the load and report posed load quantity.
-     */
-    void terminate() throws InterruptedException;
-
-    /**
-     * Get load summary.
-     */
-    LoadReport getReport();
+    Fixture create(Jenkins jenkins);
 }

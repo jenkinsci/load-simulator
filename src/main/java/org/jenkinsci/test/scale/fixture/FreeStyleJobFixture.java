@@ -21,24 +21,45 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.redhat.jenkins.mwscaletest.load;
+package org.jenkinsci.test.scale.fixture;
 
-import java.net.URL;
+import java.util.Arrays;
+import java.util.Collection;
 
-import com.redhat.jenkins.mwscaletest.Util;
+import org.jenkinsci.test.acceptance.po.FreeStyleJob;
+import org.jenkinsci.test.acceptance.po.Jenkins;
+import org.jenkinsci.test.acceptance.po.Job;
+import org.jenkinsci.test.scale.load.ConfigXmlRoundtrip;
+import org.jenkinsci.test.scale.meta.Fixture;
+import org.jenkinsci.test.scale.meta.FixtureFactory;
+import org.jenkinsci.test.scale.meta.Load;
 
-public class ConfigXmlRoundtrip extends LoadThread<Void> {
+public class FreeStyleJobFixture implements Fixture {
 
-    private final URL url;
+    private final FreeStyleJob project;
 
-    public ConfigXmlRoundtrip(URL url, long sleep) {
-        super("ConfigXmlRoundtrip for " + url.toString(), sleep);
-        this.url = url;
+    public FreeStyleJobFixture(Jenkins j) {
+        project = j.jobs.create();
     }
 
-    @Override
-    protected Void invoke() throws Exception {
-        Util.configXmlRoundtrip(url);
-        return null;
+    public Collection<? extends Load> getLoads() {
+        return Arrays.asList(
+                //new Build(this),
+                new Config(project)
+        );
+    }
+
+    public static final class Config extends ConfigXmlRoundtrip {
+
+        public Config(Job job) {
+            super(job.url("config.xml"), 1000);
+        }
+    }
+
+    public static final class Factory implements FixtureFactory {
+
+        public Fixture create(Jenkins j) {
+            return new FreeStyleJobFixture(j);
+        }
     }
 }

@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.redhat.jenkins.mwscaletest.meta;
+package org.jenkinsci.test.scale.meta;
 
 import java.util.Collection;
 

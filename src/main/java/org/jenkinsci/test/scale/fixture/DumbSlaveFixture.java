@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.redhat.jenkins.mwscaletest.fixture;
+package org.jenkinsci.test.scale.fixture;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,11 +30,10 @@ import org.jenkinsci.test.acceptance.po.Jenkins;
 import org.jenkinsci.test.acceptance.po.Slave;
 import org.jenkinsci.test.acceptance.slave.LocalSlaveController;
 import org.jenkinsci.test.acceptance.slave.SlaveController;
-
-import com.redhat.jenkins.mwscaletest.load.ConfigXmlRoundtrip;
-import com.redhat.jenkins.mwscaletest.meta.Fixture;
-import com.redhat.jenkins.mwscaletest.meta.FixtureFactory;
-import com.redhat.jenkins.mwscaletest.meta.Load;
+import org.jenkinsci.test.scale.load.ConfigXmlRoundtrip;
+import org.jenkinsci.test.scale.meta.Fixture;
+import org.jenkinsci.test.scale.meta.FixtureFactory;
+import org.jenkinsci.test.scale.meta.Load;
 
 public class DumbSlaveFixture implements Fixture {
 

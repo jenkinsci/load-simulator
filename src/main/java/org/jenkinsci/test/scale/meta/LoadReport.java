@@ -21,46 +21,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.redhat.jenkins.mwscaletest.fixture;
+package org.jenkinsci.test.scale.meta;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.Properties;
 
-import org.jenkinsci.test.acceptance.po.FreeStyleJob;
-import org.jenkinsci.test.acceptance.po.Jenkins;
-import org.jenkinsci.test.acceptance.po.Job;
+public class LoadReport {
 
-import com.redhat.jenkins.mwscaletest.load.ConfigXmlRoundtrip;
-import com.redhat.jenkins.mwscaletest.meta.Fixture;
-import com.redhat.jenkins.mwscaletest.meta.FixtureFactory;
-import com.redhat.jenkins.mwscaletest.meta.Load;
+    private final Properties properties;
 
-public class FreeStyleJobFixture implements Fixture {
-
-    private final FreeStyleJob project;
-
-    public FreeStyleJobFixture(Jenkins j) {
-        project = j.jobs.create();
+    public static Builder builder(Class<? extends Load> source) {
+        return new Builder(source);
     }
 
-    public Collection<? extends Load> getLoads() {
-        return Arrays.asList(
-                //new Build(this),
-                new Config(project)
-        );
+    private LoadReport(Builder builder) {
+        this.properties = builder.properties;
     }
 
-    public static final class Config extends ConfigXmlRoundtrip {
+    /**
+     * Report in form of properties.
+     */
+    public Properties getAnnotatedProperties() {
+        return properties;
+    }
 
-        public Config(Job job) {
-            super(job.url("config.xml"), 1000);
+    public static final class Builder {
+        private final Class<? extends Load> source;
+        private final Properties properties = new Properties();
+
+        private Builder(Class<? extends Load> source) {
+            this.source = source;
         }
-    }
 
-    public static final class Factory implements FixtureFactory {
+        public Builder put(String key, Object value) {
+            properties.setProperty(source.getName() + '.' + key, value.toString());
+            return this;
+        }
 
-        public Fixture create(Jenkins j) {
-            return new FreeStyleJobFixture(j);
+        public LoadReport build() {
+            return new LoadReport(this);
         }
     }
 }

@@ -7,7 +7,7 @@
     <version>1.32</version>
   </parent>
 
-  <artifactId>mw-scale-test</artifactId>
+  <artifactId>scale-test</artifactId>
   <version>0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 

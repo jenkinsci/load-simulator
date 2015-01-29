@@ -21,43 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.redhat.jenkins.mwscaletest.fixture;
+package org.jenkinsci.test.scale.load;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.net.URL;
 
-import org.jenkinsci.test.acceptance.po.Jenkins;
+import org.jenkinsci.test.scale.Util;
 
-import com.redhat.jenkins.mwscaletest.load.ConfigXmlRoundtrip;
-import com.redhat.jenkins.mwscaletest.meta.Fixture;
-import com.redhat.jenkins.mwscaletest.meta.FixtureFactory;
-import com.redhat.jenkins.mwscaletest.meta.Load;
+public class ConfigXmlRoundtrip extends LoadThread<Void> {
 
-public class GlobalConfigFixture implements Fixture {
+    private final URL url;
 
-    private final Jenkins jenkins;
-
-    public GlobalConfigFixture(Jenkins j) {
-        this.jenkins = j;
+    public ConfigXmlRoundtrip(URL url, long sleep) {
+        super("ConfigXmlRoundtrip for " + url.toString(), sleep);
+        this.url = url;
     }
 
-    public Collection<? extends Load> getLoads() {
-        return Arrays.asList(
-                new Config(jenkins)
-        );
-    }
-
-    public static final class Config extends ConfigXmlRoundtrip {
-
-        public Config(Jenkins jenkins) {
-            super(jenkins.url("config.xml"), 1000);
-        }
-    }
-
-    public static final class Factory implements FixtureFactory {
-
-        public Fixture create(Jenkins j) {
-            return new GlobalConfigFixture(j);
-        }
+    @Override
+    protected Void invoke() throws Exception {
+        Util.configXmlRoundtrip(url);
+        return null;
     }
 }

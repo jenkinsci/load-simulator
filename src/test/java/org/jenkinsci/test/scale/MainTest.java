@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.redhat.jenkins.mwscaletest;
+package org.jenkinsci.test.scale;
 
 import java.io.FileOutputStream;
 import java.util.ArrayList;
@@ -34,18 +34,17 @@ import javax.annotation.Nonnull;
 
 import org.jenkinsci.test.acceptance.junit.AbstractJUnitTest;
 import org.jenkinsci.test.acceptance.junit.JenkinsAcceptanceTestRule;
+import org.jenkinsci.test.scale.meta.Fixture;
+import org.jenkinsci.test.scale.meta.FixtureFactory;
+import org.jenkinsci.test.scale.meta.Load;
+import org.jenkinsci.test.scale.meta.LoadReport;
 import org.junit.Rule;
 import org.junit.Test;
 import org.reflections.Reflections;
 
-import com.redhat.jenkins.mwscaletest.meta.Fixture;
-import com.redhat.jenkins.mwscaletest.meta.FixtureFactory;
-import com.redhat.jenkins.mwscaletest.meta.Load;
-import com.redhat.jenkins.mwscaletest.meta.LoadReport;
-
 public class MainTest extends AbstractJUnitTest {
 
-    private static final @Nonnull Reflections reflections = new Reflections("com.redhat.jenkins.mwscaletest");
+    private static final @Nonnull Reflections reflections = new Reflections("org.jenkinsci.test.scale");
     private static final int timeToRun = Integer.getInteger("scaletest.timeToRun", 10);
 
     public @Rule JenkinsAcceptanceTestRule j = new JenkinsAcceptanceTestRule();

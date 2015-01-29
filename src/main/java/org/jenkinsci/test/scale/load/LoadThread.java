@@ -21,14 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.redhat.jenkins.mwscaletest.load;
+package org.jenkinsci.test.scale.load;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.redhat.jenkins.mwscaletest.meta.Load;
-import com.redhat.jenkins.mwscaletest.meta.LoadReport;
-import com.redhat.jenkins.mwscaletest.meta.LoadReport.Builder;
+import org.jenkinsci.test.scale.meta.Load;
+import org.jenkinsci.test.scale.meta.LoadReport;
+import org.jenkinsci.test.scale.meta.LoadReport.Builder;
 
 /**
  * Load implementation to invoke operation periodically and sample response times.

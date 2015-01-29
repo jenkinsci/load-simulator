@@ -21,44 +21,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.redhat.jenkins.mwscaletest.meta;
+package org.jenkinsci.test.scale.fixture;
 
-import java.util.Properties;
+import java.util.Arrays;
+import java.util.Collection;
 
-public class LoadReport {
+import org.jenkinsci.test.acceptance.po.Jenkins;
+import org.jenkinsci.test.scale.load.ConfigXmlRoundtrip;
+import org.jenkinsci.test.scale.meta.Fixture;
+import org.jenkinsci.test.scale.meta.FixtureFactory;
+import org.jenkinsci.test.scale.meta.Load;
 
-    private final Properties properties;
+public class GlobalConfigFixture implements Fixture {
 
-    public static Builder builder(Class<? extends Load> source) {
-        return new Builder(source);
+    private final Jenkins jenkins;
+
+    public GlobalConfigFixture(Jenkins j) {
+        this.jenkins = j;
     }
 
-    private LoadReport(Builder builder) {
-        this.properties = builder.properties;
+    public Collection<? extends Load> getLoads() {
+        return Arrays.asList(
+                new Config(jenkins)
+        );
     }
 
-    /**
-     * Report in form of properties.
-     */
-    public Properties getAnnotatedProperties() {
-        return properties;
-    }
+    public static final class Config extends ConfigXmlRoundtrip {
 
-    public static final class Builder {
-        private final Class<? extends Load> source;
-        private final Properties properties = new Properties();
-
-        private Builder(Class<? extends Load> source) {
-            this.source = source;
+        public Config(Jenkins jenkins) {
+            super(jenkins.url("config.xml"), 1000);
         }
+    }
 
-        public Builder put(String key, Object value) {
-            properties.setProperty(source.getName() + '.' + key, value.toString());
-            return this;
-        }
+    public static final class Factory implements FixtureFactory {
 
-        public LoadReport build() {
-            return new LoadReport(this);
+        public Fixture create(Jenkins j) {
+            return new GlobalConfigFixture(j);
         }
     }
 }
