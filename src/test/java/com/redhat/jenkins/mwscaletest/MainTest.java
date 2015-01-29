@@ -23,8 +23,10 @@
  */
 package com.redhat.jenkins.mwscaletest;
 
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -44,7 +46,7 @@ import com.redhat.jenkins.mwscaletest.meta.LoadReport;
 public class MainTest extends AbstractJUnitTest {
 
     private static final @Nonnull Reflections reflections = new Reflections("com.redhat.jenkins.mwscaletest");
-    private static final int timeToRun = Integer.getInteger("mwscaletest.timeToRun", 10);
+    private static final int timeToRun = Integer.getInteger("scaletest.timeToRun", 10);
 
     public @Rule JenkinsAcceptanceTestRule j = new JenkinsAcceptanceTestRule();
     private List<Load> loads = new ArrayList<Load>();
@@ -68,14 +70,26 @@ public class MainTest extends AbstractJUnitTest {
         Thread.sleep(1000 * timeToRun);
         long totalTime = System.currentTimeMillis() - startTime;
 
+        for (Load load: loads) {
+            load.terminate();
+        }
+
         List<LoadReport> reports = new ArrayList<LoadReport>(loads.size());
         for (Load load: loads) {
-            reports.add(load.terminate());
+            reports.add(load.getReport());
         }
 
         System.out.printf("Run for %d seconds%n", totalTime / 1000);
+        Properties result = new Properties();
         for (LoadReport r: reports) {
-            System.out.println(r.getProperties());
+            result.putAll(r.getAnnotatedProperties());
+        }
+
+        final FileOutputStream fos = new FileOutputStream("./target/result.properties");
+        try {
+            result.store(fos, null);
+        } finally {
+            fos.close();
         }
     }
 }

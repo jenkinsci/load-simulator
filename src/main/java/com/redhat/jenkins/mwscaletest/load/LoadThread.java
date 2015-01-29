@@ -24,11 +24,11 @@
 package com.redhat.jenkins.mwscaletest.load;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import com.redhat.jenkins.mwscaletest.meta.Load;
 import com.redhat.jenkins.mwscaletest.meta.LoadReport;
+import com.redhat.jenkins.mwscaletest.meta.LoadReport.Builder;
 
 /**
  * Load implementation to invoke operation periodically and sample response times.
@@ -68,21 +68,20 @@ public abstract class LoadThread<Ret> extends Thread implements Load {
         }
     }
 
-    public LoadReport terminate() throws InterruptedException {
+    public void terminate() throws InterruptedException {
         interrupt();
         join();
-        return getReport();
     }
 
-    protected LoadReport getReport() {
-        HashMap<String, String> map = new HashMap<String, String>();
-        map.put("invocations", String.valueOf(measurements.size()));
+    public LoadReport getReport() {
+        Builder report = LoadReport.builder(getClass());
+        report.put("invocations", measurements.size());
         long totalTime = 0;
         for (long m: measurements) {
             totalTime += m;
         }
-        map.put("accumulated_time", String.valueOf(totalTime));
-        return new LoadReport(getClass(), map);
+        report.put("accumulated_time", totalTime);
+        return report.build();
     }
 
     @Override

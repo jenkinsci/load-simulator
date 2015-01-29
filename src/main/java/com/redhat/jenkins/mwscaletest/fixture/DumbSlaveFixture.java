@@ -53,8 +53,15 @@ public class DumbSlaveFixture implements Fixture {
     public Collection<? extends Load> getLoads() {
         return Arrays.asList(
                 //new Build(this),
-                new ConfigXmlRoundtrip(slave.url("config.xml"), 1000)
+                new Config(slave)
         );
+    }
+
+    public static final class Config extends ConfigXmlRoundtrip {
+
+        public Config(Slave slave) {
+            super(slave.url("config.xml"), 1000);
+        }
     }
 
     public static final class Factory implements FixtureFactory {

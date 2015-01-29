@@ -23,25 +23,42 @@
  */
 package com.redhat.jenkins.mwscaletest.meta;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Properties;
 
 public class LoadReport {
 
-    private final Map<String, String> properties;
+    private final Properties properties;
 
-    public LoadReport(Class<? extends Load> source, Map<String, String> properties) {
-        this.properties = new HashMap<String, String>(properties.size());
-        for (Entry<String, String> p: properties.entrySet()) {
-            this.properties.put(source.getName() + '.' + p.getKey(), p.getValue());
-        }
+    public static Builder builder(Class<? extends Load> source) {
+        return new Builder(source);
+    }
+
+    private LoadReport(Builder builder) {
+        this.properties = builder.properties;
     }
 
     /**
      * Report in form of properties.
      */
-    public Map<String, String> getProperties() {
+    public Properties getAnnotatedProperties() {
         return properties;
+    }
+
+    public static final class Builder {
+        private final Class<? extends Load> source;
+        private final Properties properties = new Properties();
+
+        private Builder(Class<? extends Load> source) {
+            this.source = source;
+        }
+
+        public Builder put(String key, Object value) {
+            properties.setProperty(source.getName() + '.' + key, value.toString());
+            return this;
+        }
+
+        public LoadReport build() {
+            return new LoadReport(this);
+        }
     }
 }

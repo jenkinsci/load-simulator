@@ -35,16 +35,23 @@ import com.redhat.jenkins.mwscaletest.meta.Load;
 
 public class GlobalConfigFixture implements Fixture {
 
-    private final Jenkins j;
+    private final Jenkins jenkins;
 
     public GlobalConfigFixture(Jenkins j) {
-        this.j = j;
+        this.jenkins = j;
     }
 
     public Collection<? extends Load> getLoads() {
         return Arrays.asList(
-                new ConfigXmlRoundtrip(j.url("config.xml"), 1000)
+                new Config(jenkins)
         );
+    }
+
+    public static final class Config extends ConfigXmlRoundtrip {
+
+        public Config(Jenkins jenkins) {
+            super(jenkins.url("config.xml"), 1000);
+        }
     }
 
     public static final class Factory implements FixtureFactory {

@@ -28,6 +28,7 @@ import java.util.Collection;
 
 import org.jenkinsci.test.acceptance.po.FreeStyleJob;
 import org.jenkinsci.test.acceptance.po.Jenkins;
+import org.jenkinsci.test.acceptance.po.Job;
 
 import com.redhat.jenkins.mwscaletest.load.ConfigXmlRoundtrip;
 import com.redhat.jenkins.mwscaletest.meta.Fixture;
@@ -36,19 +37,24 @@ import com.redhat.jenkins.mwscaletest.meta.Load;
 
 public class FreeStyleJobFixture implements Fixture {
 
-    private final Jenkins j;
     private final FreeStyleJob project;
 
     public FreeStyleJobFixture(Jenkins j) {
-        this.j = j;
         project = j.jobs.create();
     }
 
     public Collection<? extends Load> getLoads() {
         return Arrays.asList(
                 //new Build(this),
-                new ConfigXmlRoundtrip(project.url("config.xml"), 1000)
+                new Config(project)
         );
+    }
+
+    public static final class Config extends ConfigXmlRoundtrip {
+
+        public Config(Job job) {
+            super(job.url("config.xml"), 1000);
+        }
     }
 
     public static final class Factory implements FixtureFactory {

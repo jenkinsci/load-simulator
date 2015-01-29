@@ -26,6 +26,8 @@ package com.redhat.jenkins.mwscaletest.meta;
 /**
  * Generate load utilizing fixture(s).
  *
+ *
+ *
  * @author ogondza
  */
 public interface Load {
@@ -38,5 +40,10 @@ public interface Load {
     /**
      * Terminate the load and report posed load quantity.
      */
-    LoadReport terminate() throws InterruptedException;
+    void terminate() throws InterruptedException;
+
+    /**
+     * Get load summary.
+     */
+    LoadReport getReport();
 }
