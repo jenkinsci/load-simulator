@@ -21,11 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.redhat.jenkins.mwscaletest.meta;
+package com.redhat.jenkins.mwscaletest.load;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import com.redhat.jenkins.mwscaletest.meta.Load;
+import com.redhat.jenkins.mwscaletest.meta.LoadReport;
 
 /**
  * Load implementation to invoke operation periodically and sample response times.
@@ -35,9 +38,16 @@ import java.util.List;
 public abstract class LoadThread<Ret> extends Thread implements Load {
 
     private final List<Long> measurements = new ArrayList<Long>();
+    private final long sleep;
 
-    protected LoadThread() {
+    protected LoadThread(long sleep) {
+        this.sleep = sleep;
         setName(this.getClass().getName());
+    }
+
+    protected LoadThread(String name, long sleep) {
+        super(name);
+        this.sleep = sleep;
     }
 
     protected abstract Ret invoke() throws Exception;
@@ -51,7 +61,7 @@ public abstract class LoadThread<Ret> extends Thread implements Load {
                 synchronized(measurements) {
                     measurements.add(System.currentTimeMillis() - start);
                 }
-                Thread.sleep(1000); // TODO configure
+                Thread.sleep(sleep);
             }
         } catch (Exception ex) {
             throw new AssertionError(ex);

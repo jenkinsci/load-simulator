@@ -21,40 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.redhat.jenkins.mwscaletest.fixture;
+package com.redhat.jenkins.mwscaletest.load;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.net.URL;
 
-import org.jenkinsci.test.acceptance.po.FreeStyleJob;
-import org.jenkinsci.test.acceptance.po.Jenkins;
+import com.redhat.jenkins.mwscaletest.Util;
 
-import com.redhat.jenkins.mwscaletest.load.ConfigXmlRoundtrip;
-import com.redhat.jenkins.mwscaletest.meta.Fixture;
-import com.redhat.jenkins.mwscaletest.meta.FixtureFactory;
-import com.redhat.jenkins.mwscaletest.meta.Load;
+public class ConfigXmlRoundtrip extends LoadThread<Void> {
 
-public class FreeStyleJobFixture implements Fixture {
+    private final URL url;
 
-    private final Jenkins j;
-    private final FreeStyleJob project;
-
-    public FreeStyleJobFixture(Jenkins j) {
-        this.j = j;
-        project = j.jobs.create();
+    public ConfigXmlRoundtrip(URL url, long sleep) {
+        super("ConfigXmlRoundtrip for " + url.toString(), sleep);
+        this.url = url;
     }
 
-    public Collection<? extends Load> getLoads() {
-        return Arrays.asList(
-                //new Build(this),
-                new ConfigXmlRoundtrip(project.url("config.xml"), 1000)
-        );
-    }
-
-    public static final class Factory implements FixtureFactory {
-
-        public Fixture create(Jenkins j) {
-            return new FreeStyleJobFixture(j);
-        }
+    @Override
+    protected Void invoke() throws Exception {
+        Util.configXmlRoundtrip(url);
+        return null;
     }
 }

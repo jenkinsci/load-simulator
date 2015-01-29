@@ -23,7 +23,6 @@
  */
 package com.redhat.jenkins.mwscaletest.fixture;
 
-import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -32,21 +31,18 @@ import org.jenkinsci.test.acceptance.po.Slave;
 import org.jenkinsci.test.acceptance.slave.LocalSlaveController;
 import org.jenkinsci.test.acceptance.slave.SlaveController;
 
-import com.redhat.jenkins.mwscaletest.Util;
+import com.redhat.jenkins.mwscaletest.load.ConfigXmlRoundtrip;
 import com.redhat.jenkins.mwscaletest.meta.Fixture;
 import com.redhat.jenkins.mwscaletest.meta.FixtureFactory;
 import com.redhat.jenkins.mwscaletest.meta.Load;
-import com.redhat.jenkins.mwscaletest.meta.LoadThread;
 
 public class DumbSlaveFixture implements Fixture {
 
     private SlaveController slaveController = new LocalSlaveController();
 
-    private final Jenkins j;
     private final Slave slave;
 
     public DumbSlaveFixture(Jenkins j) {
-        this.j = j;
         try {
             slave = slaveController.install(j).get();
         } catch (Exception ex) {
@@ -57,23 +53,8 @@ public class DumbSlaveFixture implements Fixture {
     public Collection<? extends Load> getLoads() {
         return Arrays.asList(
                 //new Build(this),
-                this.new ConfigSubmit()
+                new ConfigXmlRoundtrip(slave.url("config.xml"), 1000)
         );
-    }
-
-    public final class ConfigSubmit extends LoadThread<Void> {
-
-        private final URL url;
-
-        private ConfigSubmit() {
-            this.url = DumbSlaveFixture.this.slave.url("config.xml");
-        }
-
-        @Override
-        protected Void invoke() throws Exception {
-            Util.configXmlRoundtrip(url);
-            return null;
-        }
     }
 
     public static final class Factory implements FixtureFactory {
