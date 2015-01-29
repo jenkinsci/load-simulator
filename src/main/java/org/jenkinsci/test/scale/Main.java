@@ -29,24 +29,48 @@ import java.util.List;
 import java.util.Properties;
 
 import javax.annotation.Nonnull;
+import javax.inject.Inject;
 
-import org.jenkinsci.test.acceptance.junit.AbstractJUnitTest;
+import org.jenkinsci.test.acceptance.guice.World;
+import org.jenkinsci.test.acceptance.po.Jenkins;
 import org.jenkinsci.test.scale.meta.Fixture;
 import org.jenkinsci.test.scale.meta.FixtureFactory;
 import org.jenkinsci.test.scale.meta.Load;
 import org.jenkinsci.test.scale.meta.LoadReport;
-import org.junit.Test;
+import org.openqa.selenium.WebDriver;
 import org.reflections.Reflections;
 
-public class Main extends AbstractJUnitTest {
+import com.google.inject.Injector;
+
+public class Main {
 
     private static final @Nonnull Reflections reflections = new Reflections("org.jenkinsci.test.scale");
     private static final int timeToRun = Integer.getInteger("scaletest.Main.timeToRun", 1);
 
-    private List<Load> loads = new ArrayList<Load>();
+    @Inject public Jenkins jenkins;
+    @Inject public WebDriver driver;
 
-    @Test
-    public void test() throws Exception {
+    public static final void main(String... args) {
+        Main main = new Main();
+
+        World world = World.get();
+        Injector injector = world.getInjector();
+
+        world.startTestScope("Scale test");
+
+        injector.injectMembers(main);
+
+        try {
+            main.test();
+        } catch (Exception ex) {
+            throw new AssertionError(ex);
+        } finally {
+            world.endTestScope();
+        }
+    }
+
+    private void test() throws Exception {
+        List<Load> loads = new ArrayList<Load>();
 
         for (Class<? extends FixtureFactory> f: reflections.getSubTypesOf(FixtureFactory.class)) {
             FixtureFactory factory = f.newInstance();
