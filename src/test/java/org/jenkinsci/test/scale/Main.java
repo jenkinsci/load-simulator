@@ -27,33 +27,26 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.annotation.Nonnull;
 
 import org.jenkinsci.test.acceptance.junit.AbstractJUnitTest;
-import org.jenkinsci.test.acceptance.junit.JenkinsAcceptanceTestRule;
 import org.jenkinsci.test.scale.meta.Fixture;
 import org.jenkinsci.test.scale.meta.FixtureFactory;
 import org.jenkinsci.test.scale.meta.Load;
 import org.jenkinsci.test.scale.meta.LoadReport;
-import org.junit.Rule;
 import org.junit.Test;
 import org.reflections.Reflections;
 
-public class MainTest extends AbstractJUnitTest {
+public class Main extends AbstractJUnitTest {
 
     private static final @Nonnull Reflections reflections = new Reflections("org.jenkinsci.test.scale");
-    private static final int timeToRun = Integer.getInteger("scaletest.timeToRun", 10);
+    private static final int timeToRun = Integer.getInteger("scaletest.Main.timeToRun", 10);
 
-    public @Rule JenkinsAcceptanceTestRule j = new JenkinsAcceptanceTestRule();
     private List<Load> loads = new ArrayList<Load>();
 
     @Test
     public void test() throws Exception {
-
-        Logger.getLogger("com.gargoylesoftware.htmlunit").setLevel(Level.OFF);
 
         for (Class<? extends FixtureFactory> f: reflections.getSubTypesOf(FixtureFactory.class)) {
             FixtureFactory factory = f.newInstance();
