@@ -47,15 +47,13 @@ public class ListViewFixture implements Fixture {
         );
     }
 
-    public static final class Config extends ConfigXmlRoundtrip {
-
+    public static final class Config extends ConfigXmlRoundtrip<ListView> {
         public Config(ListView view) {
-            super(view.url("config.xml"), 1000);
+            super(view);
         }
     }
 
     public static final class Factory implements FixtureFactory {
-
         public Fixture create(Jenkins j) {
             return new ListViewFixture(j);
         }

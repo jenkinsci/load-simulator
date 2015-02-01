@@ -28,7 +28,6 @@ import java.util.Collection;
 
 import org.jenkinsci.test.acceptance.po.FreeStyleJob;
 import org.jenkinsci.test.acceptance.po.Jenkins;
-import org.jenkinsci.test.acceptance.po.Job;
 import org.jenkinsci.test.scale.load.ConfigXmlRoundtrip;
 import org.jenkinsci.test.scale.meta.Fixture;
 import org.jenkinsci.test.scale.meta.FixtureFactory;
@@ -49,15 +48,13 @@ public class FreeStyleJobFixture implements Fixture {
         );
     }
 
-    public static final class Config extends ConfigXmlRoundtrip {
-
-        public Config(Job job) {
-            super(job.url("config.xml"), 1000);
+    public static final class Config extends ConfigXmlRoundtrip<FreeStyleJob> {
+        public Config(FreeStyleJob entity) {
+            super(entity);
         }
     }
 
     public static final class Factory implements FixtureFactory {
-
         public Fixture create(Jenkins j) {
             return new FreeStyleJobFixture(j);
         }

@@ -46,15 +46,13 @@ public class GlobalConfigFixture implements Fixture {
         );
     }
 
-    public static final class Config extends ConfigXmlRoundtrip {
-
-        public Config(Jenkins jenkins) {
-            super(jenkins.url("config.xml"), 1000);
+    public static final class Config extends ConfigXmlRoundtrip<Jenkins> {
+        public Config(Jenkins entity) {
+            super(entity);
         }
     }
 
     public static final class Factory implements FixtureFactory {
-
         public Fixture create(Jenkins j) {
             return new GlobalConfigFixture(j);
         }

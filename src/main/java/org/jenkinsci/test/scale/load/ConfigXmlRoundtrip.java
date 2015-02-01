@@ -25,11 +25,16 @@ package org.jenkinsci.test.scale.load;
 
 import java.net.URL;
 
+import org.jenkinsci.test.acceptance.po.PageObject;
 import org.jenkinsci.test.scale.Util;
 
-public class ConfigXmlRoundtrip extends LoadThread<Void> {
+public class ConfigXmlRoundtrip<Entity extends PageObject> extends LoadThread<Void> {
 
     private final URL url;
+
+    public ConfigXmlRoundtrip(Entity entity) {
+        this(entity.url("config.xml"), 1000);
+    }
 
     public ConfigXmlRoundtrip(URL url, long sleep) {
         super("ConfigXmlRoundtrip for " + url.toString(), sleep);
