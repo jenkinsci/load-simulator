@@ -27,45 +27,37 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.jenkinsci.test.acceptance.po.Jenkins;
-import org.jenkinsci.test.acceptance.po.Slave;
-import org.jenkinsci.test.acceptance.slave.LocalSlaveController;
-import org.jenkinsci.test.acceptance.slave.SlaveController;
+import org.jenkinsci.test.acceptance.po.ListView;
 import org.jenkinsci.test.scale.load.ConfigXmlRoundtrip;
 import org.jenkinsci.test.scale.meta.Fixture;
 import org.jenkinsci.test.scale.meta.FixtureFactory;
 import org.jenkinsci.test.scale.meta.Load;
 
-public class DumbSlaveFixture implements Fixture {
+public class ListViewFixture implements Fixture {
 
-    private SlaveController slaveController = new LocalSlaveController();
+    private final ListView view;
 
-    private final Slave slave;
-
-    public DumbSlaveFixture(Jenkins j) {
-        try {
-            slave = slaveController.install(j).get();
-        } catch (Exception ex) {
-            throw new AssertionError(ex);
-        }
+    public ListViewFixture(Jenkins j) {
+        view = j.views.create(ListView.class, "a_list_view");
     }
 
     public Collection<? extends Load> getLoads() {
         return Arrays.asList(
-                new Config(slave)
+                new Config(view)
         );
     }
 
     public static final class Config extends ConfigXmlRoundtrip {
 
-        public Config(Slave slave) {
-            super(slave.url("config.xml"), 1000);
+        public Config(ListView view) {
+            super(view.url("config.xml"), 1000);
         }
     }
 
     public static final class Factory implements FixtureFactory {
 
         public Fixture create(Jenkins j) {
-            return new DumbSlaveFixture(j);
+            return new ListViewFixture(j);
         }
     }
 }
