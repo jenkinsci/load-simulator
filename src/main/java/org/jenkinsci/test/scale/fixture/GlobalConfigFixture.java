@@ -28,7 +28,6 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.jenkinsci.test.acceptance.po.Jenkins;
-import org.jenkinsci.test.scale.Util;
 import org.jenkinsci.test.scale.load.ConfigXmlRoundtrip;
 import org.jenkinsci.test.scale.meta.Fixture;
 import org.jenkinsci.test.scale.meta.FixtureFactory;
@@ -44,7 +43,7 @@ public class GlobalConfigFixture implements Fixture {
 
     public Collection<? extends Load> getLoads() {
         return Arrays.asList(
-                Util.getConfigXmlRoundtrip(jenkins, Config.class)
+                ConfigXmlRoundtrip.newInstance(jenkins, Config.class)
         );
     }
 

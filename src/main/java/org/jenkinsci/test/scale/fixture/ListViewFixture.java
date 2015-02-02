@@ -29,7 +29,6 @@ import java.util.Collection;
 
 import org.jenkinsci.test.acceptance.po.Jenkins;
 import org.jenkinsci.test.acceptance.po.ListView;
-import org.jenkinsci.test.scale.Util;
 import org.jenkinsci.test.scale.load.ConfigXmlRoundtrip;
 import org.jenkinsci.test.scale.meta.Fixture;
 import org.jenkinsci.test.scale.meta.FixtureFactory;
@@ -45,7 +44,7 @@ public class ListViewFixture implements Fixture {
 
     public Collection<? extends Load> getLoads() {
         return Arrays.asList(
-                Util.getConfigXmlRoundtrip(view, Config.class)
+                ConfigXmlRoundtrip.newInstance(view, Config.class)
         );
     }
 

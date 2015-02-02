@@ -23,43 +23,8 @@
  */
 package org.jenkinsci.test.scale;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Constructor;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
-import org.apache.commons.io.IOUtils;
-import org.jenkinsci.test.acceptance.po.PageObject;
-import org.jenkinsci.test.scale.load.ConfigXmlRoundtrip;
 
 public class Util {
-
-    public static void configXmlRoundtrip(URL url) throws IOException {
-        InputStream content = url.openConnection().getInputStream();
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-
-        con.setRequestMethod("POST");
-        con.setDoOutput(true);
-        IOUtils.copy(content, con.getOutputStream());
-
-        if (con.getResponseCode() != 200) {
-            throw new AssertionError("Unexpected response code: " + con.getResponseCode());
-        }
-    }
-
-    public static <Ret extends ConfigXmlRoundtrip> Ret getConfigXmlRoundtrip(PageObject subject, Class<Ret> type) {
-
-        String period = System.getProperty(propertyName(type, "period"));
-        if (period == null) return null;
-
-        try {
-            Constructor<Ret> cons = type.getDeclaredConstructor(URL.class, long.class);
-            return cons.newInstance(subject.url("config.xml"), Long.parseLong(period));
-        } catch (Exception ex) {
-            throw new AssertionError(ex);
-        }
-    }
 
     /**
      * Get the property name user for input and output.

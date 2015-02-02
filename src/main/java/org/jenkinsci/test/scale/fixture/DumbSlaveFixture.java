@@ -31,7 +31,6 @@ import org.jenkinsci.test.acceptance.po.Jenkins;
 import org.jenkinsci.test.acceptance.po.Slave;
 import org.jenkinsci.test.acceptance.slave.LocalSlaveController;
 import org.jenkinsci.test.acceptance.slave.SlaveController;
-import org.jenkinsci.test.scale.Util;
 import org.jenkinsci.test.scale.load.ConfigXmlRoundtrip;
 import org.jenkinsci.test.scale.meta.Fixture;
 import org.jenkinsci.test.scale.meta.FixtureFactory;
@@ -53,7 +52,7 @@ public class DumbSlaveFixture implements Fixture {
 
     public Collection<? extends Load> getLoads() {
         return Arrays.asList(
-                Util.getConfigXmlRoundtrip(slave, Config.class)
+                ConfigXmlRoundtrip.newInstance(slave, Config.class)
         );
     }
 
