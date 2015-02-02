@@ -23,10 +23,14 @@
  */
 package org.jenkinsci.test.scale;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Properties;
 
 import javax.annotation.Nonnull;
@@ -54,6 +58,8 @@ public class Main {
     public static final void main(String... args) {
         Main main = new Main();
 
+        main.applyConfigProperties();
+
         World world = World.get();
         Injector injector = world.getInjector();
 
@@ -67,6 +73,35 @@ public class Main {
             throw new AssertionError(ex);
         } finally {
             world.endTestScope();
+        }
+    }
+
+    private void applyConfigProperties() {
+        final String configPropertyName = Util.propertyName(getClass(), "config");
+        String configFileName = System.getProperty(configPropertyName);
+        if (configFileName == null) throw new AssertionError("No config file provided via " + configPropertyName);
+
+        Properties config = new Properties();
+        try {
+            config.load(new FileInputStream(configFileName));
+        } catch (FileNotFoundException ex) {
+            throw new AssertionError("Config file does not exist", ex);
+        } catch (IOException ex) {
+            throw new AssertionError("Config file can not be read", ex);
+        }
+
+        // Merge with system
+        for (Entry<Object, Object> p: config.entrySet()) {
+            String key = (String) p.getKey();
+            if (System.getProperty(key) != null) {
+                System.err.printf(
+                        "Ignoring configured value of %s in favour of JVM one: %s%n",
+                        key,
+                        System.getProperty(key)
+                );
+            }
+
+            System.setProperty(key, (String) p.getValue());
         }
     }
 

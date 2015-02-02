@@ -26,7 +26,6 @@ package org.jenkinsci.test.scale;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -55,19 +54,9 @@ public class Util {
         if (period == null) return null;
 
         try {
-            Constructor<Ret> cons = type.getDeclaredConstructor(subject.getClass(), long.class);
-            return cons.newInstance(subject, Long.parseLong(period));
-        } catch (NoSuchMethodException ex) {
-            throw new AssertionError(ex);
-        } catch (SecurityException ex) {
-            throw new AssertionError(ex);
-        } catch (InstantiationException ex) {
-            throw new AssertionError(ex);
-        } catch (IllegalAccessException ex) {
-            throw new AssertionError(ex);
-        } catch (IllegalArgumentException ex) {
-            throw new AssertionError(ex);
-        } catch (InvocationTargetException ex) {
+            Constructor<Ret> cons = type.getDeclaredConstructor(URL.class, long.class);
+            return cons.newInstance(subject.url("config.xml"), Long.parseLong(period));
+        } catch (Exception ex) {
             throw new AssertionError(ex);
         }
     }
