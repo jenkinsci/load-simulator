@@ -23,10 +23,12 @@
  */
 package org.jenkinsci.test.scale.fixture;
 
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
 
 import org.jenkinsci.test.acceptance.po.Jenkins;
+import org.jenkinsci.test.scale.Util;
 import org.jenkinsci.test.scale.load.ConfigXmlRoundtrip;
 import org.jenkinsci.test.scale.meta.Fixture;
 import org.jenkinsci.test.scale.meta.FixtureFactory;
@@ -42,13 +44,13 @@ public class GlobalConfigFixture implements Fixture {
 
     public Collection<? extends Load> getLoads() {
         return Arrays.asList(
-                new Config(jenkins)
+                Util.getConfigXmlRoundtrip(jenkins, Config.class)
         );
     }
 
-    public static final class Config extends ConfigXmlRoundtrip<Jenkins> {
-        public Config(Jenkins entity) {
-            super(entity);
+    public static final class Config extends ConfigXmlRoundtrip {
+        public Config(URL url, long sleep) {
+            super(url, sleep);
         }
     }
 

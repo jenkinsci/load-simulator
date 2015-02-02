@@ -23,11 +23,13 @@
  */
 package org.jenkinsci.test.scale.fixture;
 
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
 
 import org.jenkinsci.test.acceptance.po.Jenkins;
 import org.jenkinsci.test.acceptance.po.ListView;
+import org.jenkinsci.test.scale.Util;
 import org.jenkinsci.test.scale.load.ConfigXmlRoundtrip;
 import org.jenkinsci.test.scale.meta.Fixture;
 import org.jenkinsci.test.scale.meta.FixtureFactory;
@@ -43,13 +45,13 @@ public class ListViewFixture implements Fixture {
 
     public Collection<? extends Load> getLoads() {
         return Arrays.asList(
-                new Config(view)
+                Util.getConfigXmlRoundtrip(view, Config.class)
         );
     }
 
-    public static final class Config extends ConfigXmlRoundtrip<ListView> {
-        public Config(ListView view) {
-            super(view);
+    public static final class Config extends ConfigXmlRoundtrip {
+        public Config(URL url, long sleep) {
+            super(url, sleep);
         }
     }
 

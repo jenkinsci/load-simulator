@@ -25,6 +25,7 @@ package org.jenkinsci.test.scale;
 
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
@@ -45,7 +46,7 @@ import com.google.inject.Injector;
 public class Main {
 
     private static final @Nonnull Reflections reflections = new Reflections("org.jenkinsci.test.scale");
-    private static final int timeToRun = Integer.getInteger("scaletest.Main.timeToRun", 1);
+    private static final int timeToRun = Integer.getInteger(Util.propertyName(Main.class, "timeToRun"), 1);
 
     @Inject public Jenkins jenkins;
     @Inject public WebDriver driver;
@@ -77,6 +78,8 @@ public class Main {
             Fixture fixture = factory.create(jenkins);
             loads.addAll(fixture.getLoads());
         }
+
+        loads.removeAll(Arrays.asList((Load) null)); // Remove loads not configured to be run
 
         for (Load load: loads) {
             load.start();

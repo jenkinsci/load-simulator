@@ -25,10 +25,14 @@ package org.jenkinsci.test.scale;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 import org.apache.commons.io.IOUtils;
+import org.jenkinsci.test.acceptance.po.PageObject;
+import org.jenkinsci.test.scale.load.ConfigXmlRoundtrip;
 
 public class Util {
 
@@ -45,40 +49,37 @@ public class Util {
         }
     }
 
-//    public static <R> long measure(Callable<R> runnable) {
-//        try {
-//            long start = System.currentTimeMillis();
-//            runnable.call();
-//            return System.currentTimeMillis() - start;
-//        } catch (Exception ex) {
-//            throw new AssertionError(ex);
-//        }
-//    }
-//
-//    public static <R> Result<R> measureResult(Callable<R> runnable) {
-//        try {
-//            long start = System.currentTimeMillis();
-//            R ret = runnable.call();
-//            return new Result<R>(ret, System.currentTimeMillis() - start);
-//        } catch (Exception ex) {
-//            throw new AssertionError(ex);
-//        }
-//    }
-//
-//    public static final class Result<R> {
-//        private final R ret;
-//        private final long time;
-//        private Result(R ret, long time) {
-//            this.ret = ret;
-//            this.time = time;
-//        }
-//
-//        public R getResult() {
-//            return ret;
-//        }
-//
-//        public long getTime() {
-//            return time;
-//        }
-//    }
+    public static <Ret extends ConfigXmlRoundtrip> Ret getConfigXmlRoundtrip(PageObject subject, Class<Ret> type) {
+
+        String period = System.getProperty(propertyName(type, "period"));
+        if (period == null) return null;
+
+        try {
+            Constructor<Ret> cons = type.getDeclaredConstructor(subject.getClass(), long.class);
+            return cons.newInstance(subject, Long.parseLong(period));
+        } catch (NoSuchMethodException ex) {
+            throw new AssertionError(ex);
+        } catch (SecurityException ex) {
+            throw new AssertionError(ex);
+        } catch (InstantiationException ex) {
+            throw new AssertionError(ex);
+        } catch (IllegalAccessException ex) {
+            throw new AssertionError(ex);
+        } catch (IllegalArgumentException ex) {
+            throw new AssertionError(ex);
+        } catch (InvocationTargetException ex) {
+            throw new AssertionError(ex);
+        }
+    }
+
+    /**
+     * Get the property name user for input and output.
+     */
+    public static String propertyName(Class<?> type, String attribute) {
+        String packageName = type.getPackage().getName();
+        String canName = type.getCanonicalName();
+        assert canName.startsWith(packageName);
+        String propertyName = String.format("scaletest%s.%s", canName.substring(packageName.length()), attribute);
+        return propertyName;
+    }
 }

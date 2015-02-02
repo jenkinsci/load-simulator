@@ -23,11 +23,13 @@
  */
 package org.jenkinsci.test.scale.fixture;
 
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
 
 import org.jenkinsci.test.acceptance.po.FreeStyleJob;
 import org.jenkinsci.test.acceptance.po.Jenkins;
+import org.jenkinsci.test.scale.Util;
 import org.jenkinsci.test.scale.load.ConfigXmlRoundtrip;
 import org.jenkinsci.test.scale.meta.Fixture;
 import org.jenkinsci.test.scale.meta.FixtureFactory;
@@ -44,13 +46,13 @@ public class FreeStyleJobFixture implements Fixture {
     public Collection<? extends Load> getLoads() {
         return Arrays.asList(
                 //new Build(this),
-                new Config(project)
+                Util.getConfigXmlRoundtrip(project, Config.class)
         );
     }
 
-    public static final class Config extends ConfigXmlRoundtrip<FreeStyleJob> {
-        public Config(FreeStyleJob entity) {
-            super(entity);
+    public static final class Config extends ConfigXmlRoundtrip {
+        public Config(URL url, long sleep) {
+            super(url, sleep);
         }
     }
 
